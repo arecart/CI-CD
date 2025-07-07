@@ -47,7 +47,7 @@ jobs:
 
       - name: Create Environment
         run: |
-          az devcenter admin environment create \
+          az devcenter admin environment-type create \
               --name ${{ env.ENVIRONMENT_NAME }} --environment-type ${{ env.ENVIRONMENT_TYPE }} \
               --dev-center ${{ vars.AZURE_DEVCENTER }} --project ${{ vars.AZURE_PROJECT }} \
               --catalog-name ${{ vars.AZURE_CATALOG }} --environment-definition-name ${{ vars.AZURE_CATALOG_ITEM }} \
@@ -56,12 +56,12 @@ jobs:
       - name: Get Resource Group
         shell: bash {0}
         run: |
-          environment_rg=$(az devcenter dev environment show --name ${{ env.ENVIRONMENT_NAME }} \
+          environment_rg=$(az devcenter admin environment-type show --name ${{ env.ENVIRONMENT_NAME }} \
               --dev-center ${{ vars.AZURE_DEVCENTER }} --project ${{ vars.AZURE_PROJECT }} \
               --only-show-errors --query resourceGroupId --output tsv 2>&1)
 
           if [ $? -ne 0 ]; then
-              echo "::error::az devcenter dev environment show command failed: $environment_rg"; exit 1
+              echo "::error::az devcenter admin environment show command failed: $environment_rg"; exit 1
           fi
 
           environment_group=${environment_rg##*/}
