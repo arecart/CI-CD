@@ -53,7 +53,7 @@ jobs:
         shell: bash {0}
         run: |
           echo "Getting environment ${{ env.ENVIRONMENT_NAME }}..."
-          environment_rg=$(az devcenter dev environment show --name ${{ env.ENVIRONMENT_NAME }} \
+          environment_rg=$(az devcenter admin environment show --name ${{ env.ENVIRONMENT_NAME }} \
               --dev-center ${{ vars.AZURE_DEVCENTER }} --project ${{ vars.AZURE_PROJECT }} \
               --only-show-errors --query resourceGroupId --output tsv 2>&1)
 
@@ -62,7 +62,7 @@ jobs:
               if [[ $environment_rg =~ "EnvironmentCannotBeFound" || $environment_rg =~ "EnvironmentNotFound" ]] && [[ "$ENVIRONMENT_TYPE" == "Prod" ]]; then
                   echo "Environment ${{ env.ENVIRONMENT_NAME }} not found, creating..."
 
-                  environment_rg=$(az devcenter dev environment create \
+                  environment_rg=$(az devcenter admin environment create \
                       --name ${{ env.ENVIRONMENT_NAME }} --environment-type ${{ env.ENVIRONMENT_TYPE }} \
                       --dev-center ${{ vars.AZURE_DEVCENTER }} --project ${{ vars.AZURE_PROJECT }} \
                       --catalog-name ${{ vars.AZURE_CATALOG }} --environment-definition-name ${{ vars.AZURE_CATALOG_ITEM }} \
@@ -71,11 +71,11 @@ jobs:
 
                   if [ $? -ne 0 ]; then
                       echo "Failed to create environment ${{ env.ENVIRONMENT_NAME }}"
-                      echo "::error::az devcenter dev environment create command failed: $environment_rg"; exit 1
+                      echo "::error::az devcenter admin environment create command failed: $environment_rg"; exit 1
                   fi
               else
                   echo "Failed to get environment ${{ env.ENVIRONMENT_NAME }}"
-                  echo "::error::az devcenter dev environment show command failed: $environment_rg"; exit 1
+                  echo "::error::az devcenter admin environment show command failed: $environment_rg"; exit 1
               fi
           fi
 
